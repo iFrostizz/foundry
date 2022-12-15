@@ -21,7 +21,9 @@ cast = { path = "../cast" }
 ui = { path = "../ui" }
 
 # eth
-ethers = { git = "https://github.com/gakonst/ethers-rs", default-features = false }
+# ethers = { git = "https://github.com/gakonst/ethers-rs", default-features = false }
+# ethers-solc = { git = "https://github.com/iFrostizz/ethers-rs.git", branch = "f/ast", features = ["svm-solc", "project-util"] }
+ethers = { git = "https://github.com/iFrostizz/ethers-rs.git", branch = "f/ast", default-features = false }
 solang-parser = "0.1.11"
 
 # cli
