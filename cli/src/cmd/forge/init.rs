@@ -55,13 +55,16 @@ pub struct InitArgs {
         long
     )]
     vscode: bool,
+    #[clap(help = "Init an empty foundry project", long)]
+    empty: bool,
 }
 
 impl Cmd for InitArgs {
     type Output = ();
 
     fn run(self) -> eyre::Result<Self::Output> {
-        let InitArgs { root, template, no_git, no_commit, quiet, offline, force, vscode } = self;
+        let InitArgs { root, template, no_git, no_commit, quiet, offline, force, vscode, empty } =
+            self;
 
         let root = root.unwrap_or_else(|| std::env::current_dir().unwrap());
         // create the root dir if it does not exist
@@ -131,15 +134,17 @@ impl Cmd for InitArgs {
             let script = root.join("script");
             fs::create_dir_all(&script)?;
 
-            // write the contract file
-            let contract_path = src.join("Counter.sol");
-            fs::write(contract_path, include_str!("../../../assets/CounterTemplate.sol"))?;
-            // write the tests
-            let contract_path = test.join("Counter.t.sol");
-            fs::write(contract_path, include_str!("../../../assets/CounterTemplate.t.sol"))?;
-            // write the script
-            let contract_path = script.join("Counter.s.sol");
-            fs::write(contract_path, include_str!("../../../assets/CounterTemplate.s.sol"))?;
+            if !empty {
+                // write the contract file
+                let contract_path = src.join("Counter.sol");
+                fs::write(contract_path, include_str!("../../../assets/CounterTemplate.sol"))?;
+                // write the tests
+                let contract_path = test.join("Counter.t.sol");
+                fs::write(contract_path, include_str!("../../../assets/CounterTemplate.t.sol"))?;
+                // write the script
+                let contract_path = script.join("Counter.s.sol");
+                fs::write(contract_path, include_str!("../../../assets/CounterTemplate.s.sol"))?;
+            }
 
             let dest = root.join(Config::FILE_NAME);
             let mut config = Config::load_with_root(&root);
